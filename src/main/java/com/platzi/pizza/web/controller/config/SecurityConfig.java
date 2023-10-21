@@ -22,10 +22,10 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(customizeRequest -> {
                     customizeRequest
-                            .requestMatchers(HttpMethod.PUT)
-                            .denyAll()
-                            .requestMatchers(HttpMethod.GET, "/api/**")
-                            .permitAll()
+                            .requestMatchers(HttpMethod.PUT).hasRole("ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/api/pizzas/**").hasAnyRole("ADMIN", "CUSTOMER")
+                            .requestMatchers(HttpMethod.POST).hasRole("ADMIN")
+                            .requestMatchers("/api/order/**").hasRole("ADMIN")
                             .anyRequest()
                             .authenticated();
                 })
@@ -43,7 +43,13 @@ public class SecurityConfig {
                 .roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(admin);
+        UserDetails customer = User.builder()
+                .username("customer")
+                .password(passwordEncoder().encode("customer123"))
+                .roles("CUSTOMER")
+                .build();
+
+        return new InMemoryUserDetailsManager(admin, customer);
     }
 
     @Bean
