@@ -1,4 +1,4 @@
-package com.platzi.pizza.web.controller.config;
+package com.platzi.pizza.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
